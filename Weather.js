@@ -94,6 +94,21 @@ export default class Weather extends Component {
         return url
     }
 
+    forecast(){
+        let forecast = []
+        
+        for(let i = 0; i < 7; i++){
+            forecast.push(
+                <View key={i}>
+                    <Text>{this.state.forecast_temp[i]} Degree</Text>
+                    <Text>Weather: {this.state.forecast_main[i]}</Text>
+                </View>
+            )
+        }
+
+        return forecast
+    }
+
     //`${this.getIcon(this.state.forecast_icon[0])}`}
     //<Image source={{uri: `https://via.placeholder.com/150`}}/>
     render() {
@@ -101,12 +116,13 @@ export default class Weather extends Component {
             <SafeAreaView>
                 <Text>Weather APP</Text>
                 <Text>{this.state.city}, {this.state.country}</Text>
-                <Text>{this.state.forecast_temp[0]} Degree</Text>
-                <Image source={{uri: `${this.getIcon(this.state.forecast_icon[0])}`}}/>
-                <Text>Today's weather: {this.state.forecast_main[0]}</Text>
+                <Text>{this.state.lat}{this.state.lon}</Text>
                 <Text>{this.state.currentDate}</Text>
                 <Text>{this.state.currentDay}</Text>
-                <Text>{this.state.lat}{this.state.lon}</Text>
+                
+                <Image source={{uri: `${this.getIcon(this.state.forecast_icon[0])}`}}/>
+                {this.forecast()}
+                
             </SafeAreaView>
 
             
