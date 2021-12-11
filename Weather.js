@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react'
-import { SafeAreaView, Text, Image } from 'react-native'
+import { SafeAreaView, Text, Image, View } from 'react-native'
 import * as Location from 'expo-location';
 
 export default class Weather extends Component {
@@ -94,18 +94,22 @@ export default class Weather extends Component {
         return url
     }
 
+    //`${this.getIcon(this.state.forecast_icon[0])}`}
+    //<Image source={{uri: `https://via.placeholder.com/150`}}/>
     render() {
         return (
             <SafeAreaView>
                 <Text>Weather APP</Text>
                 <Text>{this.state.city}, {this.state.country}</Text>
                 <Text>{this.state.forecast_temp[0]} Degree</Text>
-                <View><Image source={require(`@${this.getIcon(forecast_icon[0])}`)}/></View>
+                <Image source={{uri: `${this.getIcon(this.state.forecast_icon[0])}`}}/>
                 <Text>Today's weather: {this.state.forecast_main[0]}</Text>
                 <Text>{this.state.currentDate}</Text>
                 <Text>{this.state.currentDay}</Text>
                 <Text>{this.state.lat}{this.state.lon}</Text>
             </SafeAreaView>
+
+            
         )
     }
 }
