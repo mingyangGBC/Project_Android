@@ -1,79 +1,37 @@
 import React, { Component, useState } from 'react'
 import { StyleSheet, Text, Image, View } from 'react-native'
-import * as Location from 'expo-location';
 
 export default class Weather extends Component {
-    constructor() {
+    constructor(weeklyWeatherData) {
         super()
-        this.state={
-            city:undefined,
-            country: undefined,
-            // 7 days of the temperature
-            forecast_temp:[],
-            // icon id for seven days
-            forecast_icon:[],
-            // weather for seven days
-            forecast_main:[],
-            lon:0,
-            lat:0,
+        var today = new Date(),
+        date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        this.state = {
+            data: weeklyWeatherData,
+            city: weeklyWeatherData.weeklyWeather.city.name,
+            country: weeklyWeatherData.weeklyWeather.city.country,
+            currentDate: date,
+            currentDay: today.getDay(),
+            forecast_temp: [],
+            forecast_main: [],
+            forecast_icon: [],
+            lon: weeklyWeatherData.weeklyWeather.city.coord.lon,
+            lat: weeklyWeatherData.weeklyWeather.city.coord.lat,
         }
         this.getWeather();
     }
-
-    componentDidMount(){
-        Location.installWebGeolocationPolyfill()
-        this.watchId = navigator.geolocation.watchPosition(
-            (position) => {
-                this.setState({
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude,
-                    update: true
-                })
-            },
-            (error) =>{
-                this.setState({error: error.message})
-            },
-            {
-                enableHighAccuracy: false, timeout: 1 , maximumAge:1, distanceFilter:1
-            }
-        )
-    }
     
-    getWeather = async() =>{
-        //https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY} (for lat, lon )
-        //https://pro.openweathermap.org/data/2.5/forecast/climate?q=Toronto&appid=${API_KEY} (for specific city test)
-        const location = await Location.getCurrentPositionAsync()
-        const API_KEY = '5a9f3d77f65a849f70e24fd83bd9d3b0'
-        const api = await fetch(`https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}`)
-        const response = await api.json()
-        // console.log(response)
-
-        var today = new Date(),
-        date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-
-        this.setState({
-            city: response.city.name,
-            country: response.city.country,
-            currentDate: date,
-            currentDay: today.getDay(),
-            lon: location.coords.longitude,
-            lat: location.coords.latitude
-        })
-        for(let i = 0; i < 7; i++){
-            const tempory_temp = [this.calculateCel(response.list[i].temp.eve)]
-            const tempory_main = [response.list[i].weather[0].main]
-            const tempory_icon = [response.list[i].weather[0].icon]
-            this.setState({
-                forecast_temp:[...this.state.forecast_temp, tempory_temp],
-                forecast_main:[...this.state.forecast_main, tempory_main],
-                forecast_icon:[...this.state.forecast_icon, tempory_icon],
-            })
+    getWeather = async() => {
+        for (let i = 0; i < 7; i++) {
+            this.state.forecast_icon.push(this.state.data.weeklyWeather.list[i].weather[0].icon)
+            this.state.forecast_main.push(this.state.data.weeklyWeather.list[i].weather[0].main)
+            this.state.forecast_temp.push(this.calculateCel(this.state.data.weeklyWeather.list[i].temp.eve))
         }
-      }
+    }
 
-    getDay(day){
+    getDay(day) {
         let day1 = ''
-        switch(true){
+        switch ( true ) {
             case day === 0:
                 day1 = 'Sunday'
                 break
@@ -99,37 +57,37 @@ export default class Weather extends Component {
         return day1
     }
 
-    calculateCel(temp){
+    calculateCel(temp) {
         let cel = Math.floor(temp-273.15)
         return cel
     }
 
-    getIcon(icon){
+    getIcon(icon) {
         let url = `https://openweathermap.org/img/wn/${icon}@2x.png`
         return url
     }
 
-    getDayArray(){
+    getDayArray() { 
         let day = []
         let start = this.state.currentDay
         for(let i = 0; i < 7; i++){
-            if(start>6){
-                day[i] = start-7
-                start= start+1
+            if(start > 6){
+                day[i] = start - 7
+                start = start + 1
             }
             else{
                 day[i] = start
-                start = start+1
+                start = start + 1
             }
         }
-
         return day
     }
 
-    forecast(){
+    forecast() {
         let forecast = []
         let day = this.getDayArray()
         for(let i = 0; i < 7; i++){
+            // console.log(this.state.forecast_icon[i])
             forecast.push(
                 <View key={i} style={styles.layout}>
                     <Text>{this.getDay(day[i])}</Text>
@@ -146,10 +104,8 @@ export default class Weather extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.city}>{this.state.city}, {this.state.country}</Text>
-                {/* <Text>{this.state.lat}{this.state.lon}</Text> */}
+                {/* <Text style={styles.date}>{this.state.lat}  {this.state.lon}</Text> */}
                 <Text style={styles.date}>{this.state.currentDate}</Text>
-                {/* <Text>{this.getDay(this.state.currentDay)}</Text> */}
-
                 {this.forecast()}
             </View>
         )
@@ -176,6 +132,7 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         marginHorizontal: 16,
         borderBottomWidth: 3,
+        backgroundColor: "#f0a905",
         alignItems: "center",
         justifyContent:"space-between",
         flexDirection: "row",
@@ -183,7 +140,8 @@ const styles = StyleSheet.create({
     image: {
         width: 100,
         height: 100,
-        alignSelf: "flex-start"
+        alignSelf: "flex-start",
+        paddingRight: 20
     },
     deg: {
         fontSize: 24,
@@ -194,6 +152,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontSize: 18,
         fontWeight: "bold",
+        paddingRight: 20
     }
   });
 
