@@ -20,11 +20,8 @@ export default class Weather extends Component {
         }
         this.getWeather()
     }
-
     
     getWeather = async() =>{
-
-        
         //https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY} (for lat, lon )
         //https://pro.openweathermap.org/data/2.5/forecast/climate?q=Toronto&appid=${API_KEY} (for specific city test)
         const location = await Location.getCurrentPositionAsync()
@@ -40,7 +37,7 @@ export default class Weather extends Component {
             city: response.city.name,
             country: response.city.country,
             currentDate: date,
-            currentDay: this.getDay(today.getDay()),
+            currentDay: today.getDay(),
             lon: location.coords.longitude,
             lat: location.coords.latitude
         })
@@ -90,7 +87,7 @@ export default class Weather extends Component {
     }
 
     getIcon(icon){
-        let url = `http://openweathermap.org/img/wn/${icon}@2x.png`
+        let url = `https://openweathermap.org/img/wn/${icon}@2x.png`
         return url
     }
 
@@ -108,24 +105,18 @@ export default class Weather extends Component {
 
         return forecast
     }
-
-    //`${this.getIcon(this.state.forecast_icon[0])}`}
-    //<Image source={{uri: `https://via.placeholder.com/150`}}/>
     render() {
         return (
-            <SafeAreaView>
+            <View>
                 <Text>Weather APP</Text>
                 <Text>{this.state.city}, {this.state.country}</Text>
                 <Text>{this.state.lat}{this.state.lon}</Text>
                 <Text>{this.state.currentDate}</Text>
                 <Text>{this.state.currentDay}</Text>
                 
-                <Image source={{uri: `${this.getIcon(this.state.forecast_icon[0])}`}}/>
+                <Image source={{uri: `${this.getIcon(this.state.forecast_icon[0])}`, width:32, height:32}}/>
                 {this.forecast()}
-                
-            </SafeAreaView>
-
-            
+            </View>
         )
     }
 }
