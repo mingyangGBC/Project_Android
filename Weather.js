@@ -42,6 +42,7 @@ export default class Weather extends Component {
     getWeather = async() =>{
         //https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY} (for lat, lon )
         //https://pro.openweathermap.org/data/2.5/forecast/climate?q=Toronto&appid=${API_KEY} (for specific city test)
+        Location.requestBackgroundPermissionsAsync()
         const location = await Location.getCurrentPositionAsync()
         const API_KEY = '5a9f3d77f65a849f70e24fd83bd9d3b0'
         const api = await fetch(`https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}`)
