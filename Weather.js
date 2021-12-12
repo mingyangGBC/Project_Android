@@ -19,6 +19,25 @@ export default class Weather extends Component {
         }
         this.getWeather();
     }
+
+    componentDidMount(){
+        Location.installWebGeolocationPolyfill()
+        this.watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                this.setState({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude,
+                    update: true
+                })
+            },
+            (error) =>{
+                this.setState({error: error.message})
+            },
+            {
+                enableHighAccuracy: false, timeout: 1 , maximumAge:1, distanceFilter:1
+            }
+        )
+    }
     
     getWeather = async() =>{
         //https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY} (for lat, lon )
