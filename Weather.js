@@ -131,7 +131,7 @@ export default class Weather extends Component {
                 <Text>{this.state.city}, {this.state.country}</Text>
                 <Text>{this.state.lat}{this.state.lon}</Text>
                 <Text>{this.state.currentDate}</Text>
-                <Text>{this.state.currentDay}</Text>
+                <Text>{this.getDay(this.state.currentDay)}</Text>
                 
                 
                 {this.forecast()}
