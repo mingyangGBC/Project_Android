@@ -99,6 +99,7 @@ export default class Weather extends Component {
                 <View key={i}>
                     <Text>{this.state.forecast_temp[i]} Degree</Text>
                     <Text>Weather: {this.state.forecast_main[i]}</Text>
+                    <Image source={{uri: `${this.getIcon(this.state.forecast_icon[i])}`, width:32, height:32}}/>
                 </View>
             )
         }
@@ -114,7 +115,7 @@ export default class Weather extends Component {
                 <Text>{this.state.currentDate}</Text>
                 <Text>{this.state.currentDay}</Text>
                 
-                <Image source={{uri: `${this.getIcon(this.state.forecast_icon[0])}`, width:32, height:32}}/>
+                
                 {this.forecast()}
             </View>
         )
