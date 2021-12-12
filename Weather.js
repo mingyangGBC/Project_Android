@@ -91,15 +91,33 @@ export default class Weather extends Component {
         return url
     }
 
+    getDayArray(){
+        let day = []
+        let start = this.state.currentDay
+        for(let i = 0; i < 7; i++){
+            if(start>6){
+                day[i] = start-7
+                start= start+1
+            }
+            else{
+                day[i] = start
+                start = start+1
+            }
+        }
+
+        return day
+    }
+
     forecast(){
         let forecast = []
-        
+        let day = this.getDayArray()
         for(let i = 0; i < 7; i++){
             forecast.push(
                 <View key={i}>
                     <Text>{this.state.forecast_temp[i]} Degree</Text>
                     <Text>Weather: {this.state.forecast_main[i]}</Text>
                     <Image source={{uri: `${this.getIcon(this.state.forecast_icon[i])}`, width:32, height:32}}/>
+                    <Text>{this.getDay(day[i])}</Text>
                 </View>
             )
         }
