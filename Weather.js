@@ -1,9 +1,8 @@
 import React, { Component, useState } from 'react'
-import { SafeAreaView, Text, Image, View } from 'react-native'
+import { StyleSheet, Text, Image, View } from 'react-native'
 import * as Location from 'expo-location';
 
 export default class Weather extends Component {
-
     constructor() {
         super()
         this.state={
@@ -18,7 +17,7 @@ export default class Weather extends Component {
             lon:0,
             lat:0,
         }
-        this.getWeather()
+        this.getWeather();
     }
     
     getWeather = async() =>{
@@ -28,7 +27,7 @@ export default class Weather extends Component {
         const API_KEY = '5a9f3d77f65a849f70e24fd83bd9d3b0'
         const api = await fetch(`https://pro.openweathermap.org/data/2.5/forecast/climate?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}`)
         const response = await api.json()
-        console.log(response)
+        // console.log(response)
 
         var today = new Date(),
         date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -113,11 +112,11 @@ export default class Weather extends Component {
         let day = this.getDayArray()
         for(let i = 0; i < 7; i++){
             forecast.push(
-                <View key={i}>
-                    <Text>{this.state.forecast_temp[i]} Degree</Text>
-                    <Text>Weather: {this.state.forecast_main[i]}</Text>
-                    <Image source={{uri: `${this.getIcon(this.state.forecast_icon[i])}`, width:32, height:32}}/>
+                <View key={i} style={styles.layout}>
                     <Text>{this.getDay(day[i])}</Text>
+                    <Image style={styles.image} source={{uri: `${this.getIcon(this.state.forecast_icon[i])}`,}}/>
+                    <Text style={styles.forecast}>{this.state.forecast_main[i]}</Text>
+                    <Text style={styles.deg}>{this.state.forecast_temp[i]}&deg;C</Text>
                 </View>
             )
         }
@@ -126,17 +125,57 @@ export default class Weather extends Component {
     }
     render() {
         return (
-            <View>
-                <Text>Weather APP</Text>
-                <Text>{this.state.city}, {this.state.country}</Text>
-                <Text>{this.state.lat}{this.state.lon}</Text>
-                <Text>{this.state.currentDate}</Text>
-                <Text>{this.getDay(this.state.currentDay)}</Text>
-                
-                
+            <View style={styles.container}>
+                <Text style={styles.city}>{this.state.city}, {this.state.country}</Text>
+                {/* <Text>{this.state.lat}{this.state.lon}</Text> */}
+                <Text style={styles.date}>{this.state.currentDate}</Text>
+                {/* <Text>{this.getDay(this.state.currentDay)}</Text> */}
+
                 {this.forecast()}
             </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    city: {
+        textAlign: "center",
+        fontSize: 28,
+        color: "black",
+        marginTop:50,
+    },
+    date: {
+        textAlign: "center",
+        fontSize: 16,
+        color: "black",
+    },
+    layout: {
+        padding: 10,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        borderBottomWidth: 3,
+        alignItems: "center",
+        justifyContent:"space-between",
+        flexDirection: "row",
+      },
+    image: {
+        width: 100,
+        height: 100,
+        alignSelf: "flex-start"
+    },
+    deg: {
+        fontSize: 24,
+        fontWeight: "bold",
+        paddingRight: 20
+    },
+    forecast: {
+        alignSelf: "center",
+        fontSize: 18,
+        fontWeight: "bold",
+    }
+  });
+
 
